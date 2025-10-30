@@ -6,23 +6,23 @@ int main (){
 	 scanf("%d",&n );
 	 printf("nhap gia tri cua x (0-9):");
 	 scanf("%d",&x);
-	 
+	 int so_cuoi_cung;
 	int dem = 0;
-		x=dem;
+	 		x=so_cuoi_cung; 
 		if( x < 0 || x > 9 ){
 			printf("loi");
 			return 1;
 		}
-		while(n != 0){
-			dem = n%10;
-			++dem;
-			n/=10;
-			
+		while(n > 0){
+			so_cuoi_cung = n%10;
+			 if(so_cuoi_cung==x){
+			 	dem++;
+			 }
+			 n/=10;
 		}
-		if(dem==x){
 		
 		printf("so lan so x xuat hien trong so n la : %d",dem);
-	}
+	
 		
 		
 		
