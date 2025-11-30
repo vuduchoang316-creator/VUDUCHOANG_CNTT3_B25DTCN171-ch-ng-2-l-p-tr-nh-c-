@@ -58,14 +58,8 @@ void SearchEmployeeByName();
 void SortEmployeeListByBaseSalary();
 void TimeKeeping();  
 void ViewPersenalTimesheet();
-
-int hasDigit(char *s) {
-    for (int i = 0; s[i] != '\0'; i++) {
-        if (isdigit(s[i])) return 1;  // có s? ? tr? v? 1
-    }
-    return 0;
-}
-
+int isValidName(char *name);
+int hasDigit(char *s);
 int isNumber(const char x[]);
 void toLowerCase(char *str);
 int toInt2(char s[],int start){
@@ -105,16 +99,19 @@ int main (){
 		switch(choice){
 			case 1:{
 				CreateNewEmployee();
+				printf("\nAn enter de thoat chuc nang va  ve menu chinh .\n");
 				getchar();
 				break;
 			}
 			case 2:	{
 				UpdateEmployee();
+				printf("\nAn enter de thoat chuc nang va  ve menu chinh .\n");
 				getchar(); 
 				break;
 			}
 			case 3:{
 				PhysicalDeletion();
+				printf("\nAn enter de thoat chuc nang va  ve menu chinh .\n");
 				getchar();
 				break;
 			}
@@ -124,6 +121,7 @@ int main (){
 			}
 			case 5:{
 				SearchEmployeeByName();
+				printf("\nAn enter de thoat chuc nang va  ve menu chinh .\n");
 				getchar(); 
 				break;
 			}
@@ -133,11 +131,13 @@ int main (){
 			}
 			case 7:{
 				TimeKeeping();
+				printf("\nAn enter de thoat chuc nang va  ve menu chinh .\n");
 				getchar();
 				break;
 			}
 			case 8:{
 				ViewPersenalTimesheet();
+				printf("\nAn enter de thoat chuc nang va  ve menu chinh .\n");
 				getchar(); 
 				break;
 			}
@@ -155,7 +155,7 @@ int main (){
 		}
 	}
 }
-//-----them nhan vien moi--------
+
 void CreateNewEmployee(){
 		NV s;
 		do{
@@ -183,11 +183,11 @@ void CreateNewEmployee(){
 			if(strlen(s.name)==0 || isAllSpace(s.name)){
 				printf("Loi chua nhap ten nhan vien !!\n");
 			}else{
-				if(isNumber(s.name)){
+				if(!isValidName(s.name)){
 					printf("Vui long nhap lai ten nhan vien!\n");
 				}
 			}
-		}while(strlen(s.name)==0 || isAllSpace(s.name) || isNumber(s.name));
+		}while(strlen(s.name)==0 || isAllSpace(s.name) || !isValidName(s.name));
 		
 		do{
 			printf("Nhap chuc vu cua nhan vien: ");
@@ -196,11 +196,11 @@ void CreateNewEmployee(){
 			if(strlen(s.position)==0 || isAllSpace(s.position)){
 				printf("Loi chua nhap chuc vu sinh vien !!!\n");
 			}else{
-				if(isNumber(s.position)){
+				if(!isValidName(s.position)){
 					printf("Vui long nhap lai chuc vu cua nhan vien!\n");
 				}
 			}
-		}while(strlen(s.position)==0 || isAllSpace(s.position) || isNumber(s.position));
+		}while(strlen(s.position)==0 || isAllSpace(s.position) || !isValidName(s.position));
 		
 		do{
 			printf("Nhap so tien luong: ");
@@ -208,14 +208,16 @@ void CreateNewEmployee(){
 			s.str_baseSalary[strcspn(s.str_baseSalary,"\n")]='\0';
 			if(strlen(s.str_baseSalary)==0 || isAllSpace(s.str_baseSalary)){
 				printf("LoI:khong duoc de trong  !!\n");
+			}else if(!isNumber(s.str_baseSalary)){
+				printf("Loi:khong duoc nhap chu, so khong duoc mang gia tri am!\n");
 			}else{
 				s.baseSalary=atoi(s.str_baseSalary);
 				if(s.baseSalary<0){
 				printf("Loi:khong phai so duong!!\n");
-				}	
+				}
 			}
 			
-		}while(s.baseSalary<0 || strlen(s.str_baseSalary)==0 || isAllSpace(s.str_baseSalary));
+		}while(s.baseSalary<0 || strlen(s.str_baseSalary)==0 || isAllSpace(s.str_baseSalary) || !isNumber(s.str_baseSalary));
 		
 		do{
 			printf("Nhap so ngay cong:");
@@ -224,12 +226,11 @@ void CreateNewEmployee(){
 			if(strlen(s.str_workday)==0 || isAllSpace(s.str_workday)){
 					printf("Loi : khong duoc de trong va khong duoc nhap chu !!\n");
 				}else{
-					s.workDay=atoi(s.str_workday);
-					if(s.workDay<0){
-					printf("Loi khong phai so duong!!\n");
-					}	
+					if(!isNumber(s.str_workday)){
+						printf("Loi:ngay cong khong duoc nhap chu,khong duoc de so am!\n");
+					}
 				}
-		}while(s.workDay<0 || strlen(s.str_workday)==0 || isAllSpace(s.str_workday) );
+		}while(!isNumber(s.str_workday)|| strlen(s.str_workday)==0 || isAllSpace(s.str_workday) );
 
 		
 		listEmployee[n_Employee]=s;
@@ -237,7 +238,7 @@ void CreateNewEmployee(){
 	
 	printf("Da them nhan vien thanh cong");	
 }
-//------------cap nhat ho so sinh vien-------------
+
 void UpdateEmployee(){
 	char SearchEmpId[20];
 	char newPosition[50];
@@ -276,7 +277,7 @@ void UpdateEmployee(){
 					printf("Loi: ban chua cap nhat chuc vu noi cho nhan vien !!\n");
 					continue;
 				}
-				if(hasDigit(newPosition)){
+				if(!isValidName(newPosition)){
 					printf("Loi: chuc vu khong duoc nhap so!!\n");
 					continue;
 				}
@@ -293,12 +294,14 @@ void UpdateEmployee(){
 				if(strlen(str_newBaseSalary)==0 || isAllSpace(str_newBaseSalary)){
 					printf("Loi :khong duoc de trong !!\n");
 					continue;
+				} 
+				if(!isNumber(str_newBaseSalary)){
+					printf("Loi:khong duoc nhap chu,khong duoc nhap so am!!\n");
+					continue;
 				}
-		        //-----ktra so duong-------- 
-		        
 				newBaseSalary=atoi(str_newBaseSalary);
 				if(newBaseSalary<0){
-					printf("Loi :phai nhap so duong!!\n");
+					printf("Loi:khong phai la so duong!\n");
 					continue;
 				}
 				break;
@@ -311,7 +314,7 @@ void UpdateEmployee(){
 	} 
 }
 
-//--------xoa nhan vien khoi danh sach--------
+
 void PhysicalDeletion(){
 	char searchId[20];
 	char c; 
@@ -329,10 +332,10 @@ void PhysicalDeletion(){
 	}while(strlen(searchId)==0 || isAllSpace(searchId) || !DuplicateEmployeeId(searchId));
 	do{
 	
-		printf("Ban chac chan muon sa thai nhan vien nay ? 'Y':co || 'N':khong\n");
+		printf("Ban chac chan muon sa thai nhan vien nay ? 'C':co || 'K':khong\n");
 		scanf(" %c",&c);
 		while(getchar()!='\n');
-		if(c=='y' || c=='Y'){
+		if(c=='C' || c=='c'){
 			for(int i=0;i<n_Employee;i++){
 				if(strcmp(listEmployee[i].empId,searchId)==0){
 					for(int j=i;j<n_Employee-1;j++){
@@ -343,16 +346,16 @@ void PhysicalDeletion(){
 					return;
 				}
 			}
-		}else if(c=='n' || c=='N'){
+		}else if(c=='k' || c=='K'){
 			printf("Nguoi dung chua chap nhan xoa nhan vien \n");
 			return ; 
 		}else{
-			printf("vui long chon 'Y'hoac'N' ");
+			printf("vui long chon 'C'hoac'K' ");
 		}
 	}while(1);
 }
 
-//------hien thi danh sach nhan vien-------
+
 void DisplayEmployeelist(){
 	int PageSize=5;
 	int currentPage=1;
@@ -391,7 +394,7 @@ void DisplayEmployeelist(){
 						printf("\n");
 					}	
 				}		
-		printf("\n[N].Ve trang sau | [P].Ve trang truoc | [e].Thoat.\n");
+		printf("\n[N].Ve trang sau | [P].Ve trang truoc | [E].Thoat.\n");
 		printf("Nhap:");
 		scanf("%c",&type);
 		while(getchar()!='\n');
@@ -408,7 +411,8 @@ void DisplayEmployeelist(){
 		}
 	}
 }
-//----------tim kiem nhan vien theo ten-----------
+
+
 void SearchEmployeeByName(){
 	char SearchName[50];
 	char tempName[50];
@@ -420,7 +424,7 @@ void SearchEmployeeByName(){
 		if(strlen(SearchName)==0 || isAllSpace(SearchName) || isNumber(SearchName)){
 			printf("Loi: chua nhap ten nhan vien can tim kiem va ten nhan vien khong phai so !!!\n");
 		}
-	}while(strlen(SearchName)==0 || isAllSpace(SearchName));
+	}while(strlen(SearchName)==0 || isAllSpace(SearchName) || isNumber(SearchName));
 	
 	printf("\n-----------------------------Danh sach nhan vien---------------------------------\n");
 		printf("|%-10s|%-20s|%-15s|%-15s|%-15s|\n","MaNV","Ten nhan vien","Chuc vu","Luong co ban","So ngay cong");
@@ -456,7 +460,7 @@ void SearchEmployeeByName(){
 			
 }
 
-//----------sap xep theo bang luong------------
+
 void SortEmployeeListByBaseSalary(){
 	int type;
 	char str_type[3];
@@ -466,7 +470,7 @@ void SortEmployeeListByBaseSalary(){
 	}
 	while(1){
 		system("cls");
-		printf("Chon kieu sap xep :\n");
+		printf("Chon kieu sap xep theo bang luong :\n");
 		printf("\n+----Menu---+");
 		printf("\n|0.Thoat!   |");
 		printf("\n|1.Tang dan.|");
@@ -540,11 +544,11 @@ void SortEmployeeListByBaseSalary(){
 	} 	
 }
 
-//-------cham cong--------- 
+
 void TimeKeeping(){
 	char searchIdEmp[50];
 	char Searchdate[50];int days;int month;int year;
-	//----nhap,ktra ma nv-----------
+
 	do{
 		printf("Nhap ma nhan vien :");
 		fgets(searchIdEmp,sizeof(searchIdEmp),stdin);
@@ -559,7 +563,7 @@ void TimeKeeping(){
 		}
 	}while(strlen(searchIdEmp)==0 || isAllSpace(searchIdEmp) || !DuplicateEmployeeId(searchIdEmp));
 	
-	//-----ktra,nhap ngay thang--------------
+
 	do{
 		printf("Nhap ngay cham cong:");
 		fgets(Searchdate,sizeof(Searchdate),stdin);
@@ -569,7 +573,7 @@ void TimeKeeping(){
 		}else break; 
 	}while(!isValidate(Searchdate) || strlen(Searchdate)==0);
 	
-	//-----ktra cham cong-------
+
 	for(int i=0;i<tscount;i++){
 		if(strcmp(tsList[i].empId,searchIdEmp)==0 && strcmp(tsList[i].date,Searchdate)==0){
 			printf("Da cham cong ngay %s roi ",Searchdate);
@@ -582,16 +586,22 @@ void TimeKeeping(){
 			break;
 		}
 	} 	
+	int countlogs=0;
+		for(int i=0;i<tscount;i++){
+			if(strcmp(tsList[i].empId,searchIdEmp)==0){
+				countlogs++;
+			}
+		} 
 		strcpy(tsList[tscount].status,"Di lam"); 
 		strcpy(tsList[tscount].empId,searchIdEmp);
 		strcpy(tsList[tscount].date,Searchdate);
-		sprintf(tsList[tscount].logId,"%d",tscount+1); 
+		sprintf(tsList[tscount].logId,"%d",countlogs+1); 
 		tscount++;
 		
 	printf("Da cham cong thanh cong\n");
 }
 
-//-----danh sach cham cong ca nhan----
+
 void  ViewPersenalTimesheet(){
 	char Id_nv[50];
 	do{
@@ -616,16 +626,16 @@ void  ViewPersenalTimesheet(){
 		if(strcmp(tsList[i].empId,Id_nv)==0){	
 		printf("|%-10s|%-15s|%-15s|\n",tsList[i].logId,tsList[i].date,tsList[i].status);	
 		}
-		for(int i=0;i<44;i++){
+	}
+	for(int i=0;i<44;i++){
 		printf("-");
 		}
 		printf("\n");
-	}
 	
 	
 }
 
-//---------ktra date------
+
 int isValidate(char date[]){
 	if(strlen(date)!=10)return 0;
 	if(date[2] != '/' || date[5] != '/')return 0;
@@ -668,7 +678,7 @@ int isValidate(char date[]){
 	
 	return 1;
 }
-//--------chekc trung ma nv-------
+
 int DuplicateEmployeeId(char Id[]){
 	for(int i=0 ;i<n_Employee;i++){
 		if(strcmp(listEmployee[i].empId,Id)==0){
@@ -678,24 +688,34 @@ int DuplicateEmployeeId(char Id[]){
 	return 0;
 }
 
-//-----check khoang trang------
+
 int isAllSpace(char c[]) {
     for (int i = 0; c[i] != '\0'; i++) {
         if (c[i] != ' ') return 0;
     }
     return 1;
 }
-//-------chuyen cac ky tu thanh chu thuong--------
+
 void toLowerCase(char *str){
     for(int i = 0; str[i]; i++){
         str[i] = tolower(str[i]);
     }
 }
-//------ktra so-------
+
 int isNumber(const char x[]){
     for(int i=0; i<strlen(x); i++){
         if(!isdigit(x[i])) return 0;
     }
     return 1;
+}
+
+int isValidName(char *name) {
+    for (int i = 0; name[i] != '\0'; i++) {
+        char c = name[i];
+        if (isalpha((unsigned char)c) || c == ' ')
+            continue;
+        return 0;
+    }
+    return 1; 
 }
 
